@@ -1,0 +1,117 @@
+import { PageHeader, Panel, EmptyState } from "@/components/admin/page";
+import { Badge } from "@/components/ui/badge";
+import { listInquiries, type InquiryFilter } from "@/lib/services/inquiries";
+import { formatDateTime } from "@/lib/utils";
+import { hasDatabase } from "@/lib/rsc-guard";
+
+export const dynamic = "force-dynamic";
+
+const statuses = ["new", "contacted", "qualified", "converted", "archived"] as const;
+
+const tone = {
+  new: "accent",
+  contacted: "warning",
+  qualified: "success",
+  converted: "success",
+  archived: "muted",
+} as const;
+
+export default async function InquiriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; q?: string }>;
+}) {
+  const params = await searchParams;
+  const status = statuses.find((value) => value === params.status);
+  const filter: InquiryFilter = { status, query: params.q?.trim() || undefined };
+  const { items, total } = await listInquiries(filter);
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="OVERVIEW"
+        title="Inquiries"
+        description="Submissions from the public contact form. Editing, notes and CSV export arrive with the CRM module."
+        actions={<Badge tone="muted">{total} total</Badge>}
+      />
+
+      <form className="flex flex-wrap items-end gap-2" action="/admin/inquiries">
+        <label className="flex-1 min-w-[180px]">
+          <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-fg-dim">
+            Search
+          </span>
+          <input
+            name="q"
+            defaultValue={params.q ?? ""}
+            placeholder="Name, email or company"
+            className="h-9 w-full border border-line bg-ink px-3 text-[13px] text-fg placeholder:text-fg-dim focus:border-accent/70 focus:outline-none"
+          />
+        </label>
+        <label>
+          <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-fg-dim">
+            Status
+          </span>
+          <select
+            name="status"
+            defaultValue={status ?? ""}
+            className="h-9 border border-line bg-ink px-2 text-[13px] text-fg focus:border-accent/70 focus:outline-none"
+          >
+            <option value="">All</option>
+            {statuses.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="submit"
+          className="h-9 border border-accent bg-accent px-4 font-mono text-[10px] uppercase tracking-[0.16em] text-ink"
+        >
+          Filter
+        </button>
+      </form>
+
+      <Panel title={`${items.length} shown`} bodyClassName="p-0">
+        {!hasDatabase() ? (
+          <div className="p-4">
+            <EmptyState title="Database not connected" description="Set DATABASE_URL to load inquiries." />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="p-4">
+            <EmptyState
+              title="No inquiries match this filter"
+              description="Submissions appear here as soon as the contact form is live."
+            />
+          </div>
+        ) : (
+          <ul className="divide-y divide-line">
+            {items.map((inquiry) => (
+              <li key={inquiry.id} className="px-4 py-3.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <p className="text-[13px] text-fg">{inquiry.name}</p>
+                    {!inquiry.isRead ? <span className="h-1.5 w-1.5 bg-accent" /> : null}
+                    <Badge tone={tone[inquiry.status]}>{inquiry.status}</Badge>
+                  </div>
+                  <span className="font-mono text-[10px] text-fg-dim">
+                    {formatDateTime(inquiry.createdAt)}
+                  </span>
+                </div>
+                <p className="mt-1 font-mono text-[11px] text-fg-dim">
+                  {inquiry.email}
+                  {inquiry.company ? ` · ${inquiry.company}` : ""}
+                  {inquiry.projectType ? ` · ${inquiry.projectType}` : ""}
+                  {inquiry.budgetRange ? ` · ${inquiry.budgetRange}` : ""}
+                </p>
+                <p className="mt-2 max-w-3xl whitespace-pre-line text-[12.5px] leading-relaxed text-fg-muted">
+                  {inquiry.message}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+    </div>
+  );
+}
