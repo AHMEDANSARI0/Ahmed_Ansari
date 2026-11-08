@@ -29,3 +29,6 @@ Patchers
 *.bak
 *.bak.*
 public/shots
+
+# patcher backups (scratch — never committed)
+*.phase1-backup
