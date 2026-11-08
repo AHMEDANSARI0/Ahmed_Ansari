@@ -28,7 +28,7 @@ export function Stack({
   return (
     <SectionShell
       id="stack"
-      eyebrow={section?.eyebrow ?? "SECTION 06"}
+      eyebrow={section?.eyebrow ?? "STACK"}
       heading={section?.heading ?? "Technology ecosystem"}
       description={section?.description}
       animation={animation}

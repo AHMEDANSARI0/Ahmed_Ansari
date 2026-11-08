@@ -1,292 +1,157 @@
-# Ahmed Ansari
+# Ahmed Ansari — portfolio
 
-<div align="center">
+A server-rendered portfolio with a private admin panel, a Postgres content model, and a
+deliberately small client bundle. The public site reads every section, colour, animation
+setting and project record from the database, so nothing on screen is hardcoded in JSX.
 
-<img src="https://capsule-render.vercel.app/api?type=venom&height=220&color=0:111827,50:312E81,100:7C3AED&text=AHMED%20ANSARI&fontColor=FFFFFF&fontSize=55&fontAlignY=45&desc=AI%20ENGINEER%20%7C%20AGENTIC%20AI%20%7C%20AI%20AUTOMATION&descAlignY=65&descSize=16&animation=fadeIn" width="100%" />
-
-<br/>
-
-### Engineering Intelligence. Building Autonomous Systems.
-
-I build intelligent AI agents, autonomous workflows, and AI-powered systems that transform complex processes into practical solutions.
-
-<a href="https://ahmedansari.vercel.app"><img src="https://img.shields.io/badge/Portfolio-Visit%20Website-8B5CF6?style=for-the-badge&logo=vercel&logoColor=white" /></a>
-<a href="https://github.com/AHMEDANSARI0"><img src="https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github" /></a>
-<a href="YOUR_LINKEDIN_URL"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin" /></a>
-
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=18&duration=3000&pause=1000&color=A78BFA&center=true&vCenter=true&width=750&lines=Building+Agentic+AI+Systems;Engineering+Intelligent+Automations;Designing+Autonomous+AI+Workflows;Turning+Complex+Problems+Into+AI+Solutions" />
-
-</div>
+- **Live:** https://ahmedansari.vercel.app
+- **Owner:** Ahmed Ansari — AI automation engineer, Karachi
+- **Stack:** Next.js 16 (App Router, Turbopack) · React 19 · TypeScript strict · Tailwind 4 ·
+  Drizzle ORM · PostgreSQL (Neon) · GSAP · Vitest · Playwright
 
 ---
 
-## `01` / ABOUT ME
+## 1. What is inside
 
-I'm Ahmed Ansari, an AI-focused developer passionate about engineering intelligent systems that can reason, interact with tools, automate processes, and accomplish meaningful tasks.
+### Public surface
 
-My primary focus is **Agentic AI, AI Engineering, and AI Automation**.
+| Route | What it does |
+| --- | --- |
+| `/` | Hero, about (+ education timeline), expertise, selected work, services, stack, process, contact |
+| `/work` | Filterable case-study archive: stage and stack facets are built from the projects that exist |
+| `/work/[slug]` | Case study: problem, architecture, implementation, outcome, capabilities, gallery with a keyboard lightbox |
+| `/api/health` | Deployment probe. Returns 200 only when the database answers |
+| `/api/analytics` | First-party page-view beacon: no cookies, no third-party script, no stored IP |
 
-I explore how large language models, autonomous agents, APIs, memory systems, and workflow orchestration can work together to create practical AI-powered solutions.
+### Admin panel (`/admin`)
 
-I don't see AI as just a chatbot or a text-generation tool. I see it as an engineering opportunity to build systems that can understand objectives, make decisions, use tools, and execute tasks responsibly.
+Login is the only public admin route. Everything else is gated by the proxy and by a
+permission check inside each server action.
 
-**What drives my work:**
+- **Dashboard** — live counts, recent inquiries, recent activity
+- **Inquiries** — status pipeline, notes, mark-all-read, CSV export
+- **Analytics** — 7/30/90-day views, daily trend, pages, referrers, devices, owner-traffic exclusion
+- **Projects** — create/edit/delete, drafts, SEO overrides, gallery rows, technology selection
+- **Media** — upload with magic-byte verification, SHA-256 de-duplication, alt text, usage lookup
+- **Education** — institution, programme, years, visibility, ordering; renders as a timeline in About
+- **Studios** — Sections, Design, Animation, Portrait: live CSS-variable and canvas previews
+- **System** — account, security (session revocation), settings, SEO audit, backups, audit log
 
-- Building autonomous and semi-autonomous AI agents.
-- Engineering intelligent business automation.
-- Designing multi-agent architectures and orchestration systems.
-- Connecting AI models with real-world tools and services.
-- Creating reliable AI systems with human oversight.
-- Turning repetitive operations into intelligent workflows.
+### Data
 
-## `02` / CORE SPECIALIZATIONS
+33 tables in `lib/db/schema.ts`, applied through SQL files in `drizzle/`.
+Content is cached for 5 minutes and purged by tag + path on every save.
 
-<table>
-<tr>
-<td width="50%" valign="top">
+---
 
-### Agentic AI Engineering
+## 2. Run it locally
 
-- Autonomous AI agents
-- Multi-agent systems
-- Agent orchestration
-- Tool calling and execution
-- Task planning and reasoning
-- Memory and context management
-- Human-in-the-loop execution
+```bash
+# 1. install
+npm install
 
-</td>
-<td width="50%" valign="top">
+# 2. environment
+cp .env.example .env.local        # then fill DATABASE_URL and SESSION_SECRET
 
-### AI Automation Engineering
+# 3. database (any Postgres 15+; Neon works)
+npm run db:migrate                # applies drizzle/*.sql in journal order
+npm run db:seed                   # idempotent content seed
 
-- Intelligent workflow automation
-- LLM-powered automation
-- API integrations
-- Business process automation
-- AI customer support systems
-- Event-driven workflows
-- Automated decision systems
+# 4. an admin account
+npm run admin:create              # interactive
 
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### AI Systems Architecture
-
-- LLM integration
-- Model routing
-- RAG architectures
-- AI evaluation
-- Context engineering
-- Execution sandboxes
-- Safety and approval systems
-
-</td>
-<td width="50%" valign="top">
-
-### Software Engineering
-
-- Python development
-- Backend architecture
-- REST API development
-- Database engineering
-- Full-stack applications
-- Cloud deployment
-- System integration
-
-</td>
-</tr>
-</table>
-
-## `03` / TECHNOLOGY STACK
-
-Technologies and tools I work with across AI engineering, automation, and software development.
-
-### AI & LLM Ecosystem
-
-<p>
-<img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" />
-<img src="https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white" />
-<img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" />
-<img src="https://img.shields.io/badge/LLMs-7C3AED?style=for-the-badge" />
-<img src="https://img.shields.io/badge/RAG-4F46E5?style=for-the-badge" />
-</p>
-
-### Automation & Agent Engineering
-
-<p>
-<img src="https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" />
-<img src="https://img.shields.io/badge/API_Integrations-2563EB?style=for-the-badge" />
-<img src="https://img.shields.io/badge/Agentic_AI-7C3AED?style=for-the-badge" />
-<img src="https://img.shields.io/badge/Workflow_Engineering-0891B2?style=for-the-badge" />
-</p>
-
-### Programming & Frameworks
-
-<p>
-<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
-<img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
-<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-<img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white" />
-</p>
-
-### Databases & Infrastructure
-
-<p>
-<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
-<img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" />
-<img src="https://img.shields.io/badge/Neon-00E599?style=for-the-badge&logo=neon&logoColor=black" />
-<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" />
-<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
-<img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
-</p>
-
-## `04` / FEATURED PROJECTS
-
-### 01. OmniFlow
-
-**AI-Powered Business Automation Platform**
-
-An ambitious automation platform designed to bring intelligent agents, customer communication, workflow orchestration, and business operations into one ecosystem.
-
-**Engineering focus:**
-- AI-powered customer interaction.
-- Business-specific agent context.
-- Workflow orchestration.
-- Multi-channel communication.
-- Backend control-plane architecture.
-- Scalable automation infrastructure.
-
-[Explore Repository](https://github.com/AHMEDANSARI0/Omniflow)
-
-### 02. Omni-Assistant
-
-**Local-First Hybrid AI Assistant**
-
-An AI assistant project focused on natural-language task execution and intelligent tool orchestration.
-
-**Engineering focus:**
-- Natural-language task execution.
-- Dynamic tool creation.
-- Persistent memory.
-- Sandboxed execution.
-- Local-first and hybrid AI architecture.
-- Human approval for sensitive actions.
-- Task verification and recovery.
-
-[Explore Repository](https://github.com/AHMEDANSARI0/Omni-Assistant)
-
-### 03. Nabat
-
-**E-Commerce & Digital Commerce Platform**
-
-A private-label e-commerce project focused on creating a complete digital commerce experience.
-
-**Engineering focus:**
-- Modern storefront architecture.
-- Product and order management.
-- Database-driven administration.
-- E-commerce operations.
-- Scalable application design.
-
-[Explore Repository](https://github.com/AHMEDANSARI0/e-com)
-
-*Projects may be under active development. Their descriptions represent project goals and engineering focus, not necessarily completed production capabilities.*
-
-## `05` / MY ENGINEERING APPROACH
-
-I approach AI development with a systems-engineering mindset.
-
-```text
-REAL-WORLD PROBLEM
-        |
-        v
-  UNDERSTAND OBJECTIVE
-        |
-        v
-  DESIGN AI ARCHITECTURE
-        |
-        v
-  CONNECT MODELS & TOOLS
-        |
-        v
-  EXECUTE INTELLIGENTLY
-        |
-        v
-  VERIFY THE RESULTS
-        |
-        v
-  IMPROVE & OPTIMIZE
+# 5. dev server
+npm run dev                       # http://localhost:3000
 ```
 
-My engineering principles:
+No database? The public site still renders with the static defaults in `lib/config/*`
+instead of crashing — but the admin panel needs a real connection to do anything.
 
-- **Intelligence:** Use AI where it creates real value.
-- **Autonomy:** Enable systems to perform meaningful tasks.
-- **Control:** Keep sensitive actions under appropriate human supervision.
-- **Reliability:** Verify execution instead of trusting assumptions.
-- **Efficiency:** Build lightweight and performant solutions.
-- **Security:** Treat safety as part of the architecture.
+### Embedded database for development
 
-## `06` / CURRENT EXPLORATION
+```bash
+npm run db:dev                    # PGlite on :55432
+```
 
-Areas I'm actively interested in developing further:
+PGlite is **single-connection**. Playwright workers drop sockets against it, so end-to-end
+runs need a real PostgreSQL. Use the embedded one for `npm run dev` only.
 
-- Advanced Agentic AI architectures.
-- Multi-agent collaboration.
-- Autonomous task execution.
-- LLM orchestration and model routing.
-- Retrieval-Augmented Generation.
-- Long-term agent memory.
-- Tool-use reliability and evaluation.
-- AI-powered business operations.
-- Local-first and hybrid AI infrastructure.
+---
 
-## `07` / GITHUB ACTIVITY
+## 3. Quality gates
 
-<div align="center">
+```bash
+npm run verify        # everything below, in order
+npm run typecheck     # tsc --noEmit, strict + noUncheckedIndexedAccess
+npm run lint          # eslint, flat config, no `any`
+npm test              # vitest: 85 tests, 10 files
+npm run build         # production build, 30 routes
+npm run test:e2e      # playwright (needs a built app + a real Postgres)
+```
 
-<img width="49%" src="https://github-readme-stats.vercel.app/api?username=AHMEDANSARI0&show_icons=true&theme=tokyonight&hide_border=true&rank_icon=github" />
-<img width="49%" src="https://github-readme-stats.vercel.app/api/top-langs/?username=AHMEDANSARI0&layout=compact&theme=tokyonight&hide_border=true" />
+Two sandbox notes that cost time to rediscover:
 
-<br/>
+- `next build` fetches Google Fonts at compile time. On a machine without outbound access the
+  build fails on `next/font`; that is a network problem, not a code problem.
+- The public pages are prerendered with a 5-minute revalidate. **Seed before you build**, or
+  the first build bakes in the empty state and keeps serving it until revalidation.
 
-<img width="95%" src="https://streak-stats.demolab.com?user=AHMEDANSARI0&theme=tokyonight&hide_border=true" />
+A CI workflow for typecheck, lint, unit tests and the build is in `.github/README.md`; copy it to
+`.github/workflows/ci.yml` and commit it once (see why it is not there already).
+End-to-end tests are intentionally not in CI: they need a database and are run locally.
 
-<br/>
+---
 
-<img width="95%" src="https://github-readme-activity-graph.vercel.app/graph?username=AHMEDANSARI0&theme=tokyo-night&hide_border=true&area=true" />
+## 4. Deploying
 
-</div>
+1. Push this repository; Vercel builds with `npm run build`.
+2. Set `DATABASE_URL` and `SESSION_SECRET` in the project environment.
+3. Run `npm run db:migrate` once against the production database.
+4. Run `npm run admin:create` against it.
+5. `curl -i https://<domain>/api/health` → expect `200` with `"database": "reachable"`.
 
-## `08` / LET'S CONNECT
+The canonical domain lives in the `site_settings` row (key `global`), not in code, so it can
+be changed from `/admin/settings` without a redeploy. `lib/config/site.ts` only supplies the
+defaults used when the database is absent.
 
-I'm always interested in connecting with people working on AI engineering, Agentic AI, intelligent automation, and innovative software products.
+---
 
-Whether it's discussing an AI architecture, solving a business automation challenge, or building something meaningful, let's connect.
+## 5. Security notes
 
-<div align="center">
+- Argon2id password hashing, opaque session tokens stored as HMAC-SHA256 digests, HttpOnly
+  `SameSite=Lax` cookies, 12-hour expiry, per-session revocation.
+- Login throttling (6 failures / 15 minutes) and network-level rate limiting.
+- Signed double-submit CSRF token: issued by `proxy.ts`, verified inside every mutating action.
+- Zod validation plus sanitisation on every write; the contact form adds a honeypot and spam
+  heuristics.
+- Every admin write is recorded in `audit_logs`.
+- Analytics stores a truncated hash that rotates daily. A random browser id in local storage
+  lets the owner exclude their own visits; it never leaves first-party requests.
 
-<a href="https://ahmedansari.vercel.app">
-<img src="https://img.shields.io/badge/EXPLORE_MY_PORTFOLIO-8B5CF6?style=for-the-badge&logo=vercel&logoColor=white" />
-</a>
+---
 
-<a href="https://github.com/AHMEDANSARI0">
-<img src="https://img.shields.io/badge/FOLLOW_ON_GITHUB-181717?style=for-the-badge&logo=github&logoColor=white" />
-</a>
+## 6. Repo layout
 
-<a href="YOUR_LINKEDIN_URL">
-<img src="https://img.shields.io/badge/CONNECT_ON_LINKEDIN-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
-</a>
+```
+app/(site)/          public routes, sitemap, robots, OG image
+app/admin/           login + panel (19 pages)
+app/api/             analytics beacon, health, admin media/backup routes
+components/          sections, motion, background, admin, work, ui
+lib/                 config, db, services, actions, validations, security, analytics
+drizzle/             SQL migrations + journal
+scripts/             migrate, seed, create-admin, dev-db
+tests/               unit (vitest) + e2e (playwright)
+```
 
-<br/><br/>
+---
 
-**Think Beyond Chatbots. Engineer Intelligent Agents. Automate What Matters.**
+## 7. Known gaps
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:312E81,100:7C3AED&height=100&section=footer" width="100%" />
-
-</div>
+- Project screenshots: `npm run shots:capture` (needs `npx playwright install chromium`) captures a
+  cover from each live demo into `public/shots/`. Upload them in `/admin/media` and set them as
+  covers in `/admin/projects`. Until then the gallery shows a small technical band, never a stock
+  image.
+- The CV is intentionally absent (`cv.enabled = false`).
+- Owner-traffic exclusion is per browser: a new device has to be excluded once.
+- Section reveals use CSS scroll-driven animations where supported and degrade to a static
+  render everywhere else (Safari and Firefox today).

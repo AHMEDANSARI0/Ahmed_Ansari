@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { readBrowserId } from "@/lib/analytics/browser-id";
 
 export function PageView() {
   const pathname = usePathname();
@@ -13,6 +14,8 @@ export function PageView() {
       path: pathname,
       referrer: document.referrer || null,
       viewport: window.innerWidth,
+      // Read after mount so the server render never depends on storage.
+      browserId: readBrowserId(),
     });
 
     const send = () => {

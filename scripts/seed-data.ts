@@ -20,7 +20,7 @@ export const sectionSeed = [
     position: 0,
     showInNav: true,
     fields: {
-      primaryCta: { label: "Explore my work", href: "#projects" },
+      primaryCta: { label: "Explore my work", href: "#work" },
       secondaryCta: { label: "Let's build something", href: "#contact" },
       hudLabels: [
         { label: "SYSTEM", value: "ONLINE" },
@@ -35,7 +35,7 @@ export const sectionSeed = [
     label: "About",
     navLabel: "About",
     anchor: "about",
-    eyebrow: "SECTION 02",
+    eyebrow: "PROFILE",
     heading: "Engineering that removes the busywork",
     description: flagged(
       "I am an AI automation engineer working at the intersection of applied AI and business operations. Most teams lose hours to hand-offs, spreadsheets and copy-paste. I design systems that remove that layer.",
@@ -58,7 +58,7 @@ export const sectionSeed = [
     label: "Expertise",
     navLabel: "Expertise",
     anchor: "expertise",
-    eyebrow: "SECTION 03",
+    eyebrow: "CAPABILITIES",
     heading: "Capability map",
     description: "Where I plug into a team, from agent design to deployment.",
     position: 2,
@@ -70,7 +70,7 @@ export const sectionSeed = [
     label: "Projects",
     navLabel: "Work",
     anchor: "work",
-    eyebrow: "SECTION 04",
+    eyebrow: "SELECTED WORK",
     heading: "Selected systems",
     description: "Case studies are written as engineering records: problem, architecture, implementation.",
     position: 3,
@@ -82,7 +82,7 @@ export const sectionSeed = [
     label: "Services",
     navLabel: "Services",
     anchor: "services",
-    eyebrow: "SECTION 05",
+    eyebrow: "SERVICES",
     heading: "What I build",
     description: "Scoped engagements, delivered as working systems rather than slide decks.",
     position: 4,
@@ -94,7 +94,7 @@ export const sectionSeed = [
     label: "Technology",
     navLabel: "Stack",
     anchor: "stack",
-    eyebrow: "SECTION 06",
+    eyebrow: "STACK",
     heading: "Technology ecosystem",
     description: "Tools I reach for, grouped by the problem they solve.",
     position: 5,
@@ -106,7 +106,7 @@ export const sectionSeed = [
     label: "Process",
     navLabel: "Process",
     anchor: "process",
-    eyebrow: "SECTION 07",
+    eyebrow: "PROCESS",
     heading: "How the work happens",
     description: "Five stages, each with a reviewable artifact.",
     position: 6,
@@ -118,9 +118,9 @@ export const sectionSeed = [
     label: "Contact",
     navLabel: "Contact",
     anchor: "contact",
-    eyebrow: "SECTION 08",
+    eyebrow: "CONTACT",
     heading: "Let's build something",
-    description: "Tell me what is manual, repetitive, or slow. I will reply with a technical point of view.",
+    description: "A short brief is enough: what is manual today, and what should happen instead.",
     position: 7,
     showInNav: true,
     fields: {
@@ -393,15 +393,15 @@ export const experienceSeed = [
   },
 ];
 
-export const educationSeed = [
-  {
-    institution: flagged("Your university"),
-    program: flagged("Your degree"),
-    startYear: "2019",
-    endYear: "2023",
-    position: 0,
-  },
-];
+// Empty by design. Education content is entered by the owner in /admin/education:
+// seeding an institution that was never confirmed would publish a fact that is not true.
+export const educationSeed: {
+  institution: string;
+  program: string;
+  startYear: string;
+  endYear: string | null;
+  position: number;
+}[] = [];
 
 export const knowledgeSeed = [
   {

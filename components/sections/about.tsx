@@ -4,7 +4,7 @@ import { SectionShell } from "@/components/sections/section-shell";
 import { Reveal } from "@/components/motion/reveal";
 import type { AnimationConfig, AnimationType } from "@/lib/config/animation";
 import type { AboutContent } from "@/lib/config/sections";
-import type { SectionRecord } from "@/lib/services/content";
+import type { EducationItem, SectionRecord } from "@/lib/services/content";
 import type { SiteSettingsValue } from "@/lib/config/site";
 
 export function About({
@@ -13,19 +13,21 @@ export function About({
   animation,
   sectionType,
   settings,
+  education = [],
 }: {
   section?: SectionRecord;
   content: AboutContent;
   animation: AnimationConfig;
   sectionType?: AnimationType;
   settings: SiteSettingsValue;
+  education?: EducationItem[];
 }) {
   const socials = settings.socialLinks.filter((link) => link.visible);
 
   return (
     <SectionShell
       id="about"
-      eyebrow={section?.eyebrow ?? "SECTION 02"}
+      eyebrow={section?.eyebrow ?? "PROFILE"}
       heading={section?.heading ?? "Engineering that removes the busywork"}
       description={section?.description}
       animation={animation}
@@ -112,6 +114,43 @@ export function About({
               </div>
             ))}
           </div>
+
+          {education.length > 0 ? (
+            <div className="mt-10 border-t border-line pt-6">
+              <p className="mono-label text-fg-dim">Education</p>
+              <ol className="mt-4 space-y-0">
+                {education.map((entry, index) => (
+                  <li
+                    key={entry.id}
+                    className={index === education.length - 1 ? "relative pb-0 pl-5" : "relative pb-5 pl-5"}
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-[5px] h-1.5 w-1.5 rotate-45 border border-accent/70 bg-ink"
+                    />
+                    {index < education.length - 1 ? (
+                      <span aria-hidden className="absolute left-[2.5px] top-3 h-full w-px bg-line" />
+                    ) : null}
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="text-[13px] text-fg">{entry.program}</p>
+                      <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-fg-dim">
+                        {entry.startYear} — {entry.endYear ?? "present"}
+                      </p>
+                    </div>
+                    <p className="mt-0.5 text-[12px] text-fg-muted">
+                      {entry.institution}
+                      {entry.location ? ` · ${entry.location}` : ""}
+                    </p>
+                    {entry.summary ? (
+                      <p className="mt-1 text-[11.5px] leading-relaxed text-fg-dim">
+                        {entry.summary}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
         </div>
       </div>
     </SectionShell>

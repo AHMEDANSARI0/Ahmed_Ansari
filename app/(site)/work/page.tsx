@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { WorkGallery } from "@/components/work/work-gallery";
 import { getProjectCards } from "@/lib/services/content";
 import { getSiteSettings } from "@/lib/services/settings";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -37,49 +35,17 @@ export default async function WorkIndexPage() {
           </p>
         </header>
 
-        {/* Cover images are charted from the model, so a missing asset degrades to the numbered list. */}
-        <ul className="mt-2 divide-y divide-line">
-          {projects.map((project, index) => (
-            <li key={project.id}>
-              <Link
-                href={`/work/${project.slug}`}
-                className="group grid gap-4 py-7 transition-colors sm:grid-cols-[64px_1fr_auto] sm:items-center"
-              >
-                <span className="font-mono text-[11px] tabular-nums text-fg-dim">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="font-display text-xl font-semibold uppercase tracking-wide text-fg transition-colors group-hover:text-accent">
-                      {project.title}
-                    </h2>
-                    <Badge tone="muted">{project.stage}</Badge>
-                  </div>
-                  <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-fg-muted">
-                    {project.shortDescription}
-                  </p>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {project.technologies.map((tech) => (
-                      <li
-                        key={tech}
-                        className="border border-line/70 px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-fg-dim"
-                      >
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <ArrowUpRight className="hidden h-4 w-4 text-fg-dim transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent sm:block" />
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {projects.length === 0 ? (
-          <p className="mt-10 border border-dashed border-line px-6 py-16 text-center text-sm text-fg-muted">
-            No published projects yet.
-          </p>
-        ) : null}
+        <WorkGallery
+          projects={projects.map((project) => ({
+            id: project.id,
+            slug: project.slug,
+            title: project.title,
+            shortDescription: project.shortDescription,
+            coverImageUrl: project.coverImageUrl,
+            stage: project.stage,
+            technologies: project.technologies,
+          }))}
+        />
       </div>
     </div>
   );

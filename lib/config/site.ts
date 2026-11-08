@@ -2,8 +2,10 @@ export const SITE_DEFAULTS = {
   name: "Ahmed Ansari",
   role: "AI Automation Engineer",
   logoText: "AHMED",
-  domain: "https://ahmedansari.dev",
-  email: "hello@ahmedansari.dev",
+  // Canonical identity. The deployment host is the source of truth until a custom
+  // domain is attached; the mail address is a real mailbox, not a placeholder.
+  domain: "https://ahmedansari.vercel.app",
+  email: "ahmedehtesham15@gmail.com",
   location: "Karachi, Pakistan",
   timezone: "Asia/Karachi",
   locale: "en" as const,
@@ -34,6 +36,21 @@ export type SocialLinkValue = {
   visible: boolean;
 };
 
+/**
+ * A visitor that should never be counted. Only hashes are stored: the daily
+ * rotating visitor hash and a stable hash of the browser id. No IP, no cookie.
+ */
+export type ExcludedVisitor = {
+  hash: string;
+  label: string;
+  createdAt: string;
+  kind: "daily" | "browser";
+};
+
+export type AnalyticsSettingsValue = {
+  excludedVisitors: ExcludedVisitor[];
+};
+
 export type SiteSettingsValue = {
   siteName: string;
   role: string;
@@ -60,6 +77,11 @@ export type SiteSettingsValue = {
     fileUrl: string | null;
     label: string;
   };
+  analytics: AnalyticsSettingsValue;
+};
+
+export const defaultAnalyticsSettings: AnalyticsSettingsValue = {
+  excludedVisitors: [],
 };
 
 export const defaultSiteSettings: SiteSettingsValue = {
@@ -75,23 +97,28 @@ export const defaultSiteSettings: SiteSettingsValue = {
   maintenanceMode: false,
   availability: {
     state: "available",
-    message: "Accepting new automation projects for Q1",
+    message: "Accepting new automation projects",
     showIndicator: true,
   },
   socialLinks: [
     {
       platform: "linkedin",
       label: "LinkedIn",
-      url: "https://linkedin.com/in/ahmedansari",
+      url: "https://linkedin.com/in/ahmedansari15",
       visible: true,
     },
     {
       platform: "github",
       label: "GitHub",
-      url: "https://github.com/ahmedansari",
+      url: "https://github.com/AHMEDANSARI0",
       visible: true,
     },
-    { platform: "email", label: "Email", url: "mailto:hello@ahmedansari.dev", visible: true },
+    {
+      platform: "email",
+      label: "Email",
+      url: "mailto:ahmedehtesham15@gmail.com",
+      visible: true,
+    },
   ],
   footer: {
     tagline: "Intelligent systems for businesses that refuse to stay manual.",
@@ -102,4 +129,5 @@ export const defaultSiteSettings: SiteSettingsValue = {
     fileUrl: null,
     label: "Download CV",
   },
+  analytics: defaultAnalyticsSettings,
 };

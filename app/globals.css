@@ -213,6 +213,13 @@
     animation-delay: var(--reveal-delay, 0ms);
   }
 
+  /* Intensity and duration from the animation studio shorten or lengthen the
+     visible part of the scroll range instead of being ignored. */
+  .reveal {
+    animation-duration: var(--reveal-duration, 1ms);
+    animation-timing-function: linear;
+  }
+
   .reveal-fade-up {
     --reveal-from-y: 28px;
     --reveal-from-opacity: 0;

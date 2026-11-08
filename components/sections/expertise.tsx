@@ -44,7 +44,7 @@ export function Expertise({
   return (
     <SectionShell
       id="expertise"
-      eyebrow={section?.eyebrow ?? "SECTION 03"}
+      eyebrow={section?.eyebrow ?? "CAPABILITIES"}
       heading={section?.heading ?? "Capability map"}
       description={section?.description}
       animation={animation}

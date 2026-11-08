@@ -58,7 +58,10 @@ export function Hero({
       id="home"
       className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center px-4 pb-6 pt-10 sm:px-6 lg:px-10"
     >
-      <TechnicalFrame className="relative flex min-h-[calc(100svh-8rem)] flex-col justify-between bg-ink/40 p-5 sm:p-8 lg:p-10 hero-scanline">
+      <TechnicalFrame
+        data-hero-frame
+        className="relative flex min-h-[calc(100svh-8rem)] flex-col justify-between bg-ink/40 p-5 sm:p-8 lg:p-10 hero-scanline"
+      >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 amber-bloom opacity-70"
@@ -165,7 +168,10 @@ export function Hero({
                   <span className="mono-label text-fg-dim">
                     {useParticles ? "PARTICLE LAYER / LIVE" : "PORTRAIT / STATIC"}
                   </span>
-                  <span className="mono-label text-accent">REPLACE IN ADMIN</span>
+                  {/* A developer note belongs on the placeholder only, never next to the real portrait. */}
+                  <span className="mono-label text-accent">
+                    {portrait.imageUrl ? settings.role.toUpperCase() : "PORTRAIT PENDING"}
+                  </span>
                 </div>
               </div>
             </div>

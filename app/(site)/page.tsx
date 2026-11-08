@@ -8,6 +8,7 @@ import { Stack } from "@/components/sections/stack";
 import { Process } from "@/components/sections/process";
 import { Contact } from "@/components/sections/contact";
 import {
+  getEducation,
   getExpertise,
   getProjectCards,
   getSections,
@@ -40,17 +41,27 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [sections, settings, baseAnimation, portrait, projects, expertise, services, stack] =
-    await Promise.all([
-      getSections(),
-      getSiteSettings(),
-      getAnimationSettings(),
-      getPortraitSettings(),
-      getProjectCards(),
-      getExpertise(),
-      getServices(),
-      getStack(),
-    ]);
+  const [
+    sections,
+    settings,
+    baseAnimation,
+    portrait,
+    projects,
+    expertise,
+    services,
+    stack,
+    education,
+  ] = await Promise.all([
+    getSections(),
+    getSiteSettings(),
+    getAnimationSettings(),
+    getPortraitSettings(),
+    getProjectCards(),
+    getExpertise(),
+    getServices(),
+    getStack(),
+    getEducation(),
+  ]);
 
   const ordered = visibleSections(sections);
   const animation = withSectionAnimations(baseAnimation, sections);
@@ -84,6 +95,7 @@ export default async function HomePage() {
         animation={animation}
         sectionType={sectionType("about")}
         settings={settings}
+        education={education}
       />
     ),
     expertise: (

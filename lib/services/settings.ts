@@ -2,7 +2,11 @@ import { unstable_cache } from "next/cache";
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { siteSettings } from "@/lib/db/schema";
-import { defaultSiteSettings, type SiteSettingsValue } from "@/lib/config/site";
+import {
+  defaultAnalyticsSettings,
+  defaultSiteSettings,
+  type SiteSettingsValue,
+} from "@/lib/config/site";
 
 export const CONFIG_TAGS = {
   site: "config:site",
@@ -28,7 +32,16 @@ export async function loadSiteSettings(): Promise<SiteSettingsValue> {
     const stored = rows[0]?.value as Partial<SiteSettingsValue> | undefined;
     if (!stored) return defaultSiteSettings;
 
-    return { ...defaultSiteSettings, ...stored };
+    return {
+      ...defaultSiteSettings,
+      ...stored,
+      // Nested objects are stored whole, so a row written before exclusions
+      // existed would otherwise lose the default shape.
+      availability: { ...defaultSiteSettings.availability, ...stored.availability },
+      footer: { ...defaultSiteSettings.footer, ...stored.footer },
+      cv: { ...defaultSiteSettings.cv, ...stored.cv },
+      analytics: { ...defaultAnalyticsSettings, ...stored.analytics },
+    };
   } catch {
     return defaultSiteSettings;
   }

@@ -31,7 +31,7 @@ export function Projects({
   return (
     <SectionShell
       id="work"
-      eyebrow={section?.eyebrow ?? "SECTION 04"}
+      eyebrow={section?.eyebrow ?? "SELECTED WORK"}
       heading={section?.heading ?? "Selected systems"}
       description={section?.description}
       animation={animation}
