@@ -103,7 +103,7 @@ export function PortraitStudio({
                 ))}
               </select>
               <p className="mt-1.5 text-[10.5px] text-fg-dim">
-                Media uploads arrive in phase 4; until then the placeholder asset ships with the build.
+                Pick an image from the media library, or leave empty to use the shipped placeholder.
               </p>
             </div>
             <div className="border border-line px-3 py-2">

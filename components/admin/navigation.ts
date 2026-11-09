@@ -1,20 +1,20 @@
 import {
-  Activity,
   Brush,
   ChartNoAxesColumn,
+  CircleUser,
   DatabaseBackup,
   FolderKanban,
   GraduationCap,
   Images,
-  CircleUser,
   Inbox,
   LayoutDashboard,
   Layers,
+  ScanFace,
+  ScrollText,
   Search,
   Settings,
   ShieldCheck,
   Sparkles,
-  UserRoundSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { PERMISSIONS, type Permission } from "@/lib/permissions";
@@ -56,7 +56,7 @@ export const adminNavigation: NavGroup[] = [
       {
         label: "Activity",
         href: "/admin/activity",
-        icon: Activity,
+        icon: ScrollText,
         permission: PERMISSIONS.auditView,
       },
     ],
@@ -108,7 +108,7 @@ export const adminNavigation: NavGroup[] = [
       {
         label: "Portrait",
         href: "/admin/studio/portrait",
-        icon: UserRoundSearch,
+        icon: ScanFace,
         permission: PERMISSIONS.settingsManage,
       },
     ],

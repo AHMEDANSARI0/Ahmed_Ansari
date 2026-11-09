@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { adminNavigation, type NavGroup } from "@/components/admin/navigation";
 import { cn } from "@/lib/utils";
 import type { Permission } from "@/lib/permissions";
@@ -100,9 +100,10 @@ export function Sidebar({
           <Link
             href="/"
             target="_blank"
-            className="font-mono text-[10px] uppercase tracking-[0.18em] text-fg-dim transition-colors hover:text-accent"
+            className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-fg-dim transition-colors hover:text-accent"
           >
-            View public site ↗
+            View public site
+            <ArrowUpRight className="h-3 w-3" aria-hidden />
           </Link>
         </div>
       </aside>
