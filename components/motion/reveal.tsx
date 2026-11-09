@@ -46,7 +46,9 @@ export function Reveal({
     ...style,
   } as CSSProperties;
 
-  const modifiers = ["reveal", `reveal-${type}`].filter(Boolean).join(" ");
+  // `motion-observed` opts the element into the IntersectionObserver fallback used
+  // where CSS scroll-driven animations are unsupported (Safari, Firefox today).
+  const modifiers = ["reveal", "motion-observed", `reveal-${type}`].filter(Boolean).join(" ");
 
   // Word and character reveals need one element per fragment. Anything that is not
   // a plain string falls back to the container animation rather than losing content.

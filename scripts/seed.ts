@@ -209,8 +209,8 @@ async function seed() {
       const rows = await db.query(
         `insert into projects
            (slug, title, short_description, full_description, problem, solution, architecture,
-            features, status, stage, is_featured, position, published_at)
-         values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::publish_status, $10::project_stage, $11, $12, now())
+            features, status, stage, is_featured, position, published_at, demo_url, repo_url)
+         values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::publish_status, $10::project_stage, $11, $12, now(), $13, $14)
          on conflict (slug) do update set
            title = excluded.title,
            short_description = excluded.short_description,
@@ -223,6 +223,8 @@ async function seed() {
            stage = excluded.stage,
            is_featured = excluded.is_featured,
            position = excluded.position,
+           demo_url = excluded.demo_url,
+           repo_url = excluded.repo_url,
            updated_at = now()
          returning id`,
         [
@@ -238,6 +240,8 @@ async function seed() {
           project.stage,
           project.featured,
           project.position,
+          project.demoUrl ?? null,
+          project.repoUrl ?? null,
         ],
       );
       const projectId = rows[0]?.id as string | undefined;

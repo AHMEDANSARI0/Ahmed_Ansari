@@ -5,7 +5,8 @@ import { Reveal } from "@/components/motion/reveal";
 import type { AnimationConfig, AnimationType } from "@/lib/config/animation";
 import type { AboutContent } from "@/lib/config/sections";
 import type { EducationItem, SectionRecord } from "@/lib/services/content";
-import type { SiteSettingsValue } from "@/lib/config/site";
+import { AVAILABILITY_LABELS, type SiteSettingsValue } from "@/lib/config/site";
+import type { PortraitConfig } from "@/lib/config/portrait";
 
 export function About({
   section,
@@ -14,6 +15,7 @@ export function About({
   sectionType,
   settings,
   education = [],
+  portrait,
 }: {
   section?: SectionRecord;
   content: AboutContent;
@@ -21,8 +23,11 @@ export function About({
   sectionType?: AnimationType;
   settings: SiteSettingsValue;
   education?: EducationItem[];
+  portrait?: PortraitConfig;
 }) {
   const socials = settings.socialLinks.filter((link) => link.visible);
+  // The uploaded portrait wins; the shipped photograph is the fallback.
+  const portraitSrc = portrait?.imageUrl ?? "/images/portrait-placeholder.jpg";
 
   return (
     <SectionShell
@@ -38,7 +43,7 @@ export function About({
           <div className="relative">
             <div className="relative aspect-[5/6] w-full overflow-hidden border border-line bg-ink-soft">
               <Image
-                src="/images/portrait-placeholder.jpg"
+                src={portraitSrc}
                 alt="Ahmed Ansari"
                 fill
                 sizes="(max-width: 1024px) 90vw, 480px"
@@ -104,7 +109,7 @@ export function About({
             {[
               { label: "Based in", value: settings.location },
               { label: "Focus", value: "AI + automation" },
-              { label: "Availability", value: settings.availability.state },
+              { label: "Availability", value: AVAILABILITY_LABELS[settings.availability.state] },
             ].map((item) => (
               <div key={item.label} className="bg-ink px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-fg-dim">

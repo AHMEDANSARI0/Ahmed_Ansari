@@ -91,7 +91,8 @@ export function Contact({
           <div className="mt-8 border-l border-accent/50 pl-4">
             <p className="mono-label text-fg-dim">Response policy</p>
             <p className="mt-2 text-[12.5px] leading-relaxed text-fg-muted">
-              Every inquiry is stored in the owner dashboard. Nothing is sent to third parties.
+              Every inquiry is stored in the owner dashboard first. Reply happens by email,
+              from a real mailbox you can reply to.
             </p>
           </div>
         </div>

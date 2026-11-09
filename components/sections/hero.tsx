@@ -95,6 +95,7 @@ export function Hero({
 
             <div data-hero-line className="mt-8 flex flex-wrap items-center gap-3">
                 <MagneticLink
+                  enabled={animation.magneticButtons}
                   href={content.primaryCta.href}
                   className="group inline-flex h-12 items-center gap-2 angular-clip bg-accent px-7 font-mono text-[11px] uppercase tracking-[0.18em] text-ink hover:bg-accent/90"
                 >
@@ -102,6 +103,7 @@ export function Hero({
                   <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </MagneticLink>
                 <MagneticLink
+                  enabled={animation.magneticButtons}
                   href={content.secondaryCta.href}
                   className="inline-flex h-12 items-center gap-2 border border-line px-7 font-mono text-[11px] uppercase tracking-[0.18em] text-fg transition-colors hover:border-accent/60 hover:text-accent"
                 >

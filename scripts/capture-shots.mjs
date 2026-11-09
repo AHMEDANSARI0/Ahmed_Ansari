@@ -39,7 +39,9 @@ const targets = [
   },
 ];
 
-const outputDir = "public/shots";
+const outputDir = process.env.SCREENSHOT_DIR ?? "public/shots";
+// Retina by default: 1440x900 is a layout test, 2x is a cover image.
+const deviceScaleFactor = Number(process.env.SCREENSHOT_SCALE ?? 2);
 
 async function main() {
   await mkdir(outputDir, { recursive: true });
@@ -47,7 +49,7 @@ async function main() {
   const browser = await chromium.launch();
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
-    deviceScaleFactor: 1,
+    deviceScaleFactor,
     colorScheme: "dark",
     // A normal desktop UA so the demo sites serve their real layout.
     userAgent:

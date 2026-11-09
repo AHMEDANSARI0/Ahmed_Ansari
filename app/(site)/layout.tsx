@@ -1,5 +1,6 @@
 import { PatternLayer } from "@/components/background/pattern-layer";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
+import { MotionObserver } from "@/components/motion/motion-observer";
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
 import { PageView } from "@/components/analytics/page-view";
@@ -46,7 +47,13 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <div style={themeVars} className="relative min-h-screen bg-ink">
       <div className="relative">
-        <PatternLayer config={design.background} className="fixed inset-0 h-screen w-full" />
+        <PatternLayer
+          config={{
+            ...design.background,
+            cursorInteraction: design.background.cursorInteraction && animation.cursorGlow,
+          }}
+          className="fixed inset-0 h-screen w-full"
+        />
         <div className="relative z-10">
           {animation.scrollProgressBar ? <ScrollProgress /> : null}
           <SiteHeader
@@ -55,6 +62,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             ctaLabel="Let's talk"
             ctaHref="#contact"
           />
+          <MotionObserver />
           <PageView />
           <main>{children}</main>
           <SiteFooter settings={settings} navItems={navItems} />
