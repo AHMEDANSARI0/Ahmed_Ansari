@@ -106,18 +106,18 @@ function patchSeo() {
   console.log(colour.bold("\n[A] SEO surface"));
 
   // A1 — dynamic share card: portrait + real headline instead of a hardcoded line.
+  //
+  // Written as a whole file, not as a sequence of replacements. Replacement chains
+  // leave half-patched files behind when one anchor misses (ar: an import lands but
+  // its body does not), which is exactly the failure this avoids.
   const ogPath = "app/(site)/opengraph-image.tsx";
   const og = read(ogPath);
   if (og === null) {
     tally("warn", "A1 — opengraph-image.tsx not found");
-  } else if (og.includes("readFile") && og.includes("PORTRAIT_PATH")) {
+  } else if (og.includes("portrait ? (") && og.includes("PORTRAIT_PATH")) {
     tally("skip", "A1 — share card already renders the portrait");
   } else {
-    const replaced = swap(
-      og,
-      'import { ImageResponse } from "next/og";',
-      'export const alt = "AI Automation Engineer";',
-      `import { ImageResponse } from "next/og";
+    const expected = `import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getSiteSettings } from "@/lib/services/settings";
@@ -127,65 +127,74 @@ export const contentType = "image/png";
 export const alt = "Ahmed Ansari — AI automation engineer";
 export const runtime = "nodejs";
 
-const PORTRAIT_PATH = join(process.cwd(), "public", "images", "portrait-placeholder.jpg");`,
-    );
+const PORTRAIT_PATH = join(process.cwd(), "public", "images", "portrait-placeholder.jpg");
 
-    if (!replaced) {
-      tally("warn", "A1 — share card shape changed, left untouched");
-    } else {
-      // Swap the hardcoded headline for the configured role, and add the photo.
-      const withPortrait = replaced
-        .replace(
-          `export default async function OpengraphImage() {
-  const settings = await getSiteSettings();`,
-          `export default async function OpengraphImage() {
+export default async function OpengraphImage() {
   const settings = await getSiteSettings();
 
   // A missing asset must not break the card: the gradient stands in silently.
   const portrait = await readFile(PORTRAIT_PATH)
     .then((file) => \`data:image/jpeg;base64,\${file.toString("base64")}\`)
-    .catch(() => null);`,
-        )
-        .replace(
-          `            Building intelligence. Automating the future.`,
-          `            {settings.role}.`,
-        )
-        .replace(
-          `        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderTop: "1px solid #262626",
-            paddingTop: 20,
-          }}
-        >`,
-          `        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderTop: "1px solid #262626",
-            paddingTop: 20,
-          }}
-        >`,
-        );
+    .catch(() => null);
 
-      // Place the portrait on the right without disturbing the text column.
-      // The card always ships the conditional: a missing asset degrades silently.
-      const final = withPortrait
-        .replace(
-          `          justifyContent: "space-between",
-          backgroundColor: "#050505",
-          padding: 64,`,
-          `          justifyContent: "space-between",
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
           backgroundColor: "#050505",
           padding: 64,
-          position: "relative",`,
-        )
-        .replace(
-          "      </div>\n    ),\n    size,\n  );\n}",
-          `        {portrait ? (
+          position: "relative",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ width: 12, height: 12, backgroundColor: "#FF9418", marginRight: 16 }} />
+          <div style={{ color: "#F5F5F5", fontSize: 22, letterSpacing: 8, fontWeight: 700 }}>
+            {settings.logoText.toUpperCase()}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ color: "#FF9418", fontSize: 20, letterSpacing: 6 }}>
+            {settings.role.toUpperCase()}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              marginTop: 24,
+              color: "#F5F5F5",
+              fontSize: 82,
+              lineHeight: 1,
+              fontWeight: 800,
+              letterSpacing: -2,
+              maxWidth: 900,
+            }}
+          >
+            {settings.role}.
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            borderTop: "1px solid #262626",
+            paddingTop: 20,
+          }}
+        >
+          <div style={{ display: "flex", color: "#A3A3A3", fontSize: 18, letterSpacing: 4 }}>
+            {settings.domain.replace(/^https?:\\/\\//, "")}
+          </div>
+          <div style={{ display: "flex", color: "#A3A3A3", fontSize: 18, letterSpacing: 4 }}>
+            {settings.location}
+          </div>
+        </div>
+        {portrait ? (
           <img
             src={portrait}
             alt=""
@@ -206,11 +215,9 @@ const PORTRAIT_PATH = join(process.cwd(), "public", "images", "portrait-placehol
     ),
     size,
   );
-}`,
-        );
-
-      save(ogPath, og, final, "A1 — share card carries the portrait and the configured role");
-    }
+}
+`;
+    save(ogPath, og, expected, "A1 — share card carries the portrait and the configured role");
   }
 
   // A2 — web app manifest.
@@ -916,19 +923,66 @@ export function MotionObserver() {
 
   save("components/motion/motion-observer.tsx", read("components/motion/motion-observer.tsx"), component, "H1 — MotionObserver component");
 
+  // H2 — the observer has to be both imported and mounted. A half-applied run leaves
+  // an unused import (lint error) or a mounted component with no import (build error),
+  // so each half is checked and repaired independently.
   const layoutPath = "app/(site)/layout.tsx";
   const layout = read(layoutPath);
   if (layout === null) return tally("warn", "H2 — site layout not found");
-  if (layout.includes("MotionObserver")) return tally("skip", "H2 — observer already mounted");
+  const mounts = (layout.match(/<MotionObserver \/>/g) ?? []).length;
+  if (mounts === 1 && layout.includes("motion-observer")) {
+    return tally("skip", "H2 — observer already mounted");
+  }
+  if (mounts > 1) {
+    // An earlier half-run mounted it more than once; collapse to a single instance.
+    let deduped = layout;
+    while ((deduped.match(/<MotionObserver \/>/g) ?? []).length > 1) {
+      deduped = deduped.replace("          <MotionObserver />\n          <MotionObserver />", "          <MotionObserver />");
+      deduped = deduped.replace("<MotionObserver />\n          <MotionObserver />", "<MotionObserver />");
+      if ((deduped.match(/<MotionObserver \/>/g) ?? []).length > 1) {
+        const first = deduped.indexOf("<MotionObserver />");
+        const second = deduped.indexOf("<MotionObserver />", first + 1);
+        deduped = deduped.slice(0, second) + deduped.slice(second + "<MotionObserver />".length);
+      }
+    }
+    save(layoutPath, layout, deduped, "H2 — duplicate observer mount removed");
+    return;
+  }
 
-  const next = layout
-    .replace(
-      'import { ScrollProgress } from "@/components/motion/scroll-progress";',
-      'import { ScrollProgress } from "@/components/motion/scroll-progress";\nimport { MotionObserver } from "@/components/motion/motion-observer";',
-    )
-    .replace("          <PageView />", "          <MotionObserver />\n          <PageView />");
+  let withImport = layout;
+  if (!withImport.includes("motion-observer")) {
+    const anchor = 'import { ScrollProgress } from "@/components/motion/scroll-progress";';
+    if (withImport.includes(anchor)) {
+      withImport = withImport.replace(
+        anchor,
+        `${anchor}\nimport { MotionObserver } from "@/components/motion/motion-observer";`,
+      );
+    }
+  }
 
-  save(layoutPath, layout, next, "H2 — observer mounted in the site layout");
+  let withMount = withImport;
+  if (!withMount.includes("<MotionObserver />")) {
+    // Anchor on the exact line, indentation captured from the file itself. Chaining a
+    // deeper and a shallower pattern is a trap: the shallower one matches inside the
+    // already-rewritten line and mounts the component twice.
+    withMount = withMount.replace(
+      /^(\s*)(<PageView \/>)/m,
+      (_, indent, tag) => `${indent}<MotionObserver />\n${indent}${tag}`,
+    );
+  }
+
+  const problems = [];
+  if (!withMount.includes("motion-observer")) problems.push("import");
+  if (!withMount.includes("<MotionObserver />")) problems.push("mount");
+
+  if (problems.length > 0) {
+    tally(
+      "warn",
+      `H2 — layout shape changed (${problems.join(", ")}). Add the import and <MotionObserver /> by hand.`,
+    );
+  } else {
+    save(layoutPath, layout, withMount, "H2 — observer mounted in the site layout");
+  }
 }
 
 /* ================================================== I. Dependency hygiene */
