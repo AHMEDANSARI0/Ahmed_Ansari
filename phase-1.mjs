@@ -188,7 +188,7 @@ export default async function OpengraphImage() {
           }}
         >
           <div style={{ display: "flex", color: "#A3A3A3", fontSize: 18, letterSpacing: 4 }}>
-            {settings.domain.replace(/^https?:\\/\\//, "")}
+            {settings.domain.split("//").at(-1)}
           </div>
           <div style={{ display: "flex", color: "#A3A3A3", fontSize: 18, letterSpacing: 4 }}>
             {settings.location}
@@ -730,7 +730,7 @@ async function main() {
         slug: target.slug,
         url: target.url,
         ok: false,
-        error: error instanceof Error ? error.message.split("\\n")[0] : String(error),
+        error: error instanceof Error ? error.message.split(String.fromCharCode(10))[0] : String(error),
       });
     } finally {
       await page.close();
