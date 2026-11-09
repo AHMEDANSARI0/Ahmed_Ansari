@@ -54,7 +54,7 @@ export function Contact({
   return (
     <SectionShell
       id="contact"
-      eyebrow={section?.eyebrow ?? "SECTION 08"}
+      eyebrow={section?.eyebrow ?? "CONTACT"}
       heading={section?.heading ?? "Let's build something"}
       description={section?.description}
       animation={animation}
@@ -63,10 +63,7 @@ export function Contact({
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div className="flex flex-col justify-between">
           <div>
-            <p className="font-display text-[clamp(1.2rem,2vw,1.6rem)] leading-relaxed text-fg">
-              Tell me what is manual, repetitive, or slow. I will reply with a technical point of
-              view and a scope.
-            </p>
+
 
             <ul className="mt-8 space-y-3">
               <li className="flex items-center gap-3 border border-line px-3 py-2.5">
@@ -94,7 +91,8 @@ export function Contact({
           <div className="mt-8 border-l border-accent/50 pl-4">
             <p className="mono-label text-fg-dim">Response policy</p>
             <p className="mt-2 text-[12.5px] leading-relaxed text-fg-muted">
-              Every inquiry is stored in the owner dashboard. Nothing is sent to third parties.
+              Every inquiry is stored in the owner dashboard first. Reply happens by email,
+              from a real mailbox you can reply to.
             </p>
           </div>
         </div>

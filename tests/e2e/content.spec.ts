@@ -148,3 +148,34 @@ test.describe("analytics and backups", () => {
     expect(response.status()).toBe(401);
   });
 });
+
+test.describe("work archive", () => {
+  test("facets are built from the projects that exist", async ({ page }) => {
+    await page.goto("/work");
+
+    // Every facet must map to at least one visible card; nothing is invented.
+    const facets = page.getByRole("button", { name: /^Filter by (stage|technology):/ });
+    const count = await facets.count();
+    expect(count).toBeGreaterThan(0);
+
+    for (let index = 0; index < count; index += 1) {
+      await expect(facets.nth(index)).toHaveAttribute("aria-pressed", "false");
+    }
+
+    const first = facets.first();
+    await first.click();
+    await expect(first).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText(/of \d+ records?/)).toBeVisible();
+
+    await page.getByRole("button", { name: /^Clear$/i }).click();
+    await expect(first).toHaveAttribute("aria-pressed", "false");
+  });
+
+  test("a project without a cover renders a technical band, not an empty box", async ({ page }) => {
+    await page.goto("/work");
+    const cards = page.locator("ul li a[href^='/work/']");
+    await expect(cards.first()).toBeVisible();
+    // The band carries the slug rather than a stock image.
+    await expect(page.getByText(/no capture yet/i).first()).toBeVisible();
+  });
+});

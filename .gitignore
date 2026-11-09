@@ -24,3 +24,11 @@ tsconfig.tsbuildinfo
 Patchers
 .Patchers
 /Patchers
+
+# editor patcher backups, never committed
+*.bak
+*.bak.*
+public/shots
+
+# patcher backups (scratch — never committed)
+*.phase1-backup

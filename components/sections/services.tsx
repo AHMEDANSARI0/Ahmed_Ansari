@@ -28,7 +28,7 @@ export function Services({
   return (
     <SectionShell
       id="services"
-      eyebrow={section?.eyebrow ?? "SECTION 05"}
+      eyebrow={section?.eyebrow ?? "SERVICES"}
       heading={section?.heading ?? "What I build"}
       description={section?.description}
       animation={animation}

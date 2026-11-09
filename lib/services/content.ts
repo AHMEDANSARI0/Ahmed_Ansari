@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { asc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import {
+  education,
   projectTechnologies,
   projects,
   sectionContent,
@@ -205,6 +206,47 @@ async function loadProjects(): Promise<ProjectCard[]> {
 }
 
 export const getProjectCards = unstable_cache(loadProjects, ["project-cards"], {
+  tags: [CONFIG_TAGS.content],
+  revalidate: 300,
+});
+
+export type EducationItem = {
+  id: string;
+  institution: string;
+  program: string;
+  location: string | null;
+  startYear: string;
+  endYear: string | null;
+  summary: string | null;
+};
+
+async function loadEducation(): Promise<EducationItem[]> {
+  if (!hasDatabase()) return [];
+  try {
+    const rows = await getDb()
+      .select()
+      .from(education)
+      .where(eq(education.isVisible, true))
+      .orderBy(asc(education.position), asc(education.startYear));
+
+    // A placeholder that never got replaced is worse than no block at all.
+    return rows
+      .map((row) => ({
+        id: row.id,
+        institution: publicText(row.institution) ?? "",
+        program: publicText(row.program) ?? "",
+        location: row.location,
+        startYear: row.startYear,
+        endYear: row.endYear,
+        summary: publicText(row.summary),
+      }))
+      .filter((row) => row.institution.length > 0 && row.program.length > 0);
+  } catch {
+    return [];
+  }
+}
+
+export const getEducation = unstable_cache(loadEducation, ["education"], {
   tags: [CONFIG_TAGS.content],
   revalidate: 300,
 });

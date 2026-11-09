@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Code2, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { HairlineRule } from "@/components/ui/technical-frame";
+import { ShotGallery } from "@/components/work/shot-gallery";
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/services/projects";
 import { getSiteSettings } from "@/lib/services/settings";
 import { buildMetadata, projectJsonLd } from "@/lib/seo/metadata";
@@ -209,26 +210,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <HairlineRule />
             <div className="mt-5 grid gap-4 lg:grid-cols-[220px_1fr]">
               <h2 className="mono-label text-accent">Gallery</h2>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {project.gallery.map((image) => (
-                  <figure key={image.url} className="border border-line">
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-soft">
-                      <Image
-                        src={image.url}
-                        alt={image.alt}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 420px"
-                        className="object-cover"
-                      />
-                    </div>
-                    {image.caption ? (
-                      <figcaption className="border-t border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-fg-dim">
-                        {image.caption}
-                      </figcaption>
-                    ) : null}
-                  </figure>
-                ))}
-              </div>
+              <ShotGallery shots={project.gallery} />
             </div>
           </section>
         ) : null}

@@ -16,7 +16,7 @@ export function Process({
   return (
     <SectionShell
       id="process"
-      eyebrow={section?.eyebrow ?? "SECTION 07"}
+      eyebrow={section?.eyebrow ?? "PROCESS"}
       heading={section?.heading ?? "How the work happens"}
       description={section?.description}
       animation={animation}

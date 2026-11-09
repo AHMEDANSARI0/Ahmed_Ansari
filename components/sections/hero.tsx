@@ -58,7 +58,10 @@ export function Hero({
       id="home"
       className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center px-4 pb-6 pt-10 sm:px-6 lg:px-10"
     >
-      <TechnicalFrame className="relative flex min-h-[calc(100svh-8rem)] flex-col justify-between bg-ink/40 p-5 sm:p-8 lg:p-10 hero-scanline">
+      <TechnicalFrame
+        data-hero-frame
+        className="relative flex min-h-[calc(100svh-8rem)] flex-col justify-between bg-ink/40 p-5 sm:p-8 lg:p-10 hero-scanline"
+      >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 amber-bloom opacity-70"
@@ -92,6 +95,7 @@ export function Hero({
 
             <div data-hero-line className="mt-8 flex flex-wrap items-center gap-3">
                 <MagneticLink
+                  enabled={animation.magneticButtons}
                   href={content.primaryCta.href}
                   className="group inline-flex h-12 items-center gap-2 angular-clip bg-accent px-7 font-mono text-[11px] uppercase tracking-[0.18em] text-ink hover:bg-accent/90"
                 >
@@ -99,6 +103,7 @@ export function Hero({
                   <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </MagneticLink>
                 <MagneticLink
+                  enabled={animation.magneticButtons}
                   href={content.secondaryCta.href}
                   className="inline-flex h-12 items-center gap-2 border border-line px-7 font-mono text-[11px] uppercase tracking-[0.18em] text-fg transition-colors hover:border-accent/60 hover:text-accent"
                 >
@@ -165,7 +170,10 @@ export function Hero({
                   <span className="mono-label text-fg-dim">
                     {useParticles ? "PARTICLE LAYER / LIVE" : "PORTRAIT / STATIC"}
                   </span>
-                  <span className="mono-label text-accent">REPLACE IN ADMIN</span>
+                  {/* A developer note belongs on the placeholder only, never next to the real portrait. */}
+                  <span className="mono-label text-accent">
+                    {portrait.imageUrl ? settings.role.toUpperCase() : "PORTRAIT PENDING"}
+                  </span>
                 </div>
               </div>
             </div>

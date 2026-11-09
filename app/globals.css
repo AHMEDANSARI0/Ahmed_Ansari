@@ -213,6 +213,13 @@
     animation-delay: var(--reveal-delay, 0ms);
   }
 
+  /* Intensity and duration from the animation studio shorten or lengthen the
+     visible part of the scroll range instead of being ignored. */
+  .reveal {
+    animation-duration: var(--reveal-duration, 1ms);
+    animation-timing-function: linear;
+  }
+
   .reveal-fade-up {
     --reveal-from-y: 28px;
     --reveal-from-opacity: 0;
@@ -393,4 +400,32 @@
 .text-outline {
   -webkit-text-stroke: 1px rgba(245, 245, 245, 0.28);
   color: transparent;
+}
+
+/* ---------------------------------------------------------------- *
+ * Motion fallback: browsers without CSS scroll-driven animations
+ * (Safari and Firefox today) get the same reveal, driven by an
+ * IntersectionObserver that adds .motion-in. Without JS the content
+ * simply stays visible.
+ * ---------------------------------------------------------------- */
+.motion-observed:not(.motion-in) {
+  opacity: 0;
+}
+
+.motion-observed.motion-in {
+  animation: reveal-up 620ms var(--reveal-delay, 0ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@supports (animation-timeline: view()) {
+  .motion-observed.motion-in,
+  .motion-observed:not(.motion-in) {
+    animation: inherit;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-observed:not(.motion-in) {
+    opacity: 1;
+  }
 }

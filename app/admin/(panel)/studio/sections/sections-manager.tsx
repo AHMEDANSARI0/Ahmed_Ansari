@@ -105,7 +105,7 @@ export function SectionsManager({
         label: draft.label,
         navLabel: draft.navLabel || null,
         anchor: draft.anchor,
-        eyebrow: draft.eyebrow || null,
+        eyebrow: draft.eyebrow || "SECTION",
         heading: draft.heading || null,
         description: draft.description || null,
         isVisible: draft.isVisible,

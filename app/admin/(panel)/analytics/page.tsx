@@ -1,5 +1,7 @@
 import { PageHeader, Panel, StatCard } from "@/components/admin/page";
+import { AnalyticsExclusion } from "@/components/admin/analytics-exclusion";
 import { getAnalyticsSummary, type AnalyticsWindow } from "@/lib/services/analytics";
+import { getSiteSettingsFresh } from "@/lib/services/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +38,7 @@ export default async function AnalyticsPage({
   const params = await searchParams;
   const requested = Number(params.days);
   const days = windows.includes(requested as AnalyticsWindow) ? (requested as AnalyticsWindow) : 30;
-  const summary = await getAnalyticsSummary(days);
+  const [summary, settings] = await Promise.all([getAnalyticsSummary(days), getSiteSettingsFresh()]);
 
   const deviceTotal = summary.devices.reduce((sum, entry) => sum + entry.views, 0) || 1;
 
@@ -142,6 +144,8 @@ export default async function AnalyticsPage({
               </ul>
             </Panel>
           </div>
+
+          <AnalyticsExclusion exclusions={settings.analytics.excludedVisitors} />
 
           <p className="text-[11px] leading-relaxed text-fg-dim">
             Retention: rows are plain page views, no personal data. Prune the table periodically with

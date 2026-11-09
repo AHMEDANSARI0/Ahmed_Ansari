@@ -1,12 +1,22 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { getSiteSettings } from "@/lib/services/settings";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "AI Automation Engineer";
+export const alt = "Ahmed Ansari — AI automation engineer";
+export const runtime = "nodejs";
+
+const PORTRAIT_PATH = join(process.cwd(), "public", "images", "portrait-placeholder.jpg");
 
 export default async function OpengraphImage() {
   const settings = await getSiteSettings();
+
+  // A missing asset must not break the card: the gradient stands in silently.
+  const portrait = await readFile(PORTRAIT_PATH)
+    .then((file) => `data:image/jpeg;base64,${file.toString("base64")}`)
+    .catch(() => null);
 
   return new ImageResponse(
     (
@@ -19,6 +29,7 @@ export default async function OpengraphImage() {
           justifyContent: "space-between",
           backgroundColor: "#050505",
           padding: 64,
+          position: "relative",
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -44,7 +55,7 @@ export default async function OpengraphImage() {
               maxWidth: 900,
             }}
           >
-            Building intelligence. Automating the future.
+            {settings.role}.
           </div>
         </div>
 
@@ -64,6 +75,23 @@ export default async function OpengraphImage() {
             {settings.location}
           </div>
         </div>
+        {portrait ? (
+          <img
+            src={portrait}
+            alt=""
+            width={330}
+            height={412}
+            style={{
+              position: "absolute",
+              right: 64,
+              top: 64,
+              objectFit: "cover",
+              objectPosition: "top",
+              opacity: 0.9,
+              border: "1px solid #262626",
+            }}
+          />
+        ) : null}
       </div>
     ),
     size,

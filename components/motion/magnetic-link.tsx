@@ -10,12 +10,14 @@ export function MagneticLink({
   className,
   strength = 10,
   external,
+  enabled = true,
 }: {
   href: string;
   children: React.ReactNode;
   className?: string;
   strength?: number;
   external?: boolean;
+  enabled?: boolean;
 }) {
   const ref = useRef<HTMLAnchorElement | null>(null);
 
@@ -27,6 +29,7 @@ export function MagneticLink({
   const move = (event: React.PointerEvent<HTMLAnchorElement>) => {
     const node = ref.current;
     if (!node) return;
+    if (!enabled) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
 

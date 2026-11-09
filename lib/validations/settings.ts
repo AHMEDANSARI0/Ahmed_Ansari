@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { emailSchema, hexColorSchema } from "@/lib/validations/shared";
+import { analyticsSettingsSchema } from "@/lib/validations/analytics";
 
 export const socialLinkSchema = z.object({
   platform: z.enum(["linkedin", "github", "email", "x", "website", "upwork"]),
@@ -46,6 +47,8 @@ export const siteSettingsSchema = z.object({
     label: z.string().trim().max(60),
   }),
   socialLinks: z.array(socialLinkSchema).max(8),
+  // Optional so settings rows written before exclusions existed still parse.
+  analytics: analyticsSettingsSchema.optional(),
 });
 
 export const designConfigUpdateSchema = z.object({

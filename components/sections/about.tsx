@@ -4,8 +4,9 @@ import { SectionShell } from "@/components/sections/section-shell";
 import { Reveal } from "@/components/motion/reveal";
 import type { AnimationConfig, AnimationType } from "@/lib/config/animation";
 import type { AboutContent } from "@/lib/config/sections";
-import type { SectionRecord } from "@/lib/services/content";
-import type { SiteSettingsValue } from "@/lib/config/site";
+import type { EducationItem, SectionRecord } from "@/lib/services/content";
+import { AVAILABILITY_LABELS, type SiteSettingsValue } from "@/lib/config/site";
+import type { PortraitConfig } from "@/lib/config/portrait";
 
 export function About({
   section,
@@ -13,19 +14,25 @@ export function About({
   animation,
   sectionType,
   settings,
+  education = [],
+  portrait,
 }: {
   section?: SectionRecord;
   content: AboutContent;
   animation: AnimationConfig;
   sectionType?: AnimationType;
   settings: SiteSettingsValue;
+  education?: EducationItem[];
+  portrait?: PortraitConfig;
 }) {
   const socials = settings.socialLinks.filter((link) => link.visible);
+  // The uploaded portrait wins; the shipped photograph is the fallback.
+  const portraitSrc = portrait?.imageUrl ?? "/images/portrait-placeholder.jpg";
 
   return (
     <SectionShell
       id="about"
-      eyebrow={section?.eyebrow ?? "SECTION 02"}
+      eyebrow={section?.eyebrow ?? "PROFILE"}
       heading={section?.heading ?? "Engineering that removes the busywork"}
       description={section?.description}
       animation={animation}
@@ -36,7 +43,7 @@ export function About({
           <div className="relative">
             <div className="relative aspect-[5/6] w-full overflow-hidden border border-line bg-ink-soft">
               <Image
-                src="/images/portrait-placeholder.jpg"
+                src={portraitSrc}
                 alt="Ahmed Ansari"
                 fill
                 sizes="(max-width: 1024px) 90vw, 480px"
@@ -102,7 +109,7 @@ export function About({
             {[
               { label: "Based in", value: settings.location },
               { label: "Focus", value: "AI + automation" },
-              { label: "Availability", value: settings.availability.state },
+              { label: "Availability", value: AVAILABILITY_LABELS[settings.availability.state] },
             ].map((item) => (
               <div key={item.label} className="bg-ink px-4 py-3">
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-fg-dim">
@@ -112,6 +119,43 @@ export function About({
               </div>
             ))}
           </div>
+
+          {education.length > 0 ? (
+            <div className="mt-10 border-t border-line pt-6">
+              <p className="mono-label text-fg-dim">Education</p>
+              <ol className="mt-4 space-y-0">
+                {education.map((entry, index) => (
+                  <li
+                    key={entry.id}
+                    className={index === education.length - 1 ? "relative pb-0 pl-5" : "relative pb-5 pl-5"}
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-[5px] h-1.5 w-1.5 rotate-45 border border-accent/70 bg-ink"
+                    />
+                    {index < education.length - 1 ? (
+                      <span aria-hidden className="absolute left-[2.5px] top-3 h-full w-px bg-line" />
+                    ) : null}
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="text-[13px] text-fg">{entry.program}</p>
+                      <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-fg-dim">
+                        {entry.startYear} — {entry.endYear ?? "present"}
+                      </p>
+                    </div>
+                    <p className="mt-0.5 text-[12px] text-fg-muted">
+                      {entry.institution}
+                      {entry.location ? ` · ${entry.location}` : ""}
+                    </p>
+                    {entry.summary ? (
+                      <p className="mt-1 text-[11.5px] leading-relaxed text-fg-dim">
+                        {entry.summary}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
         </div>
       </div>
     </SectionShell>
